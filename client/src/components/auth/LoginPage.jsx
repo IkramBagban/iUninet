@@ -1,26 +1,7 @@
 import { Link } from "react-router-dom";
-import { useState } from "react";
+
 const Login = () => {
-  const [ email, setEmail ] = useState("");
-  const [ password, setPassword ] = useState("");
-  
-
-  const handleSubmit = () => {
-    console.log(email, password);
-  }
-
-  const handleInputChangePassword=(e)=>{
-    setPassword(e.target.value);
-  }
-
-  const handleInputChangeEmail=(e)=>{
-  console.log(e.target.value);
-  setEmail(e.target.value);
-  }
   return (
-
-     <>
-       <form onSubmit={handleSubmit}> 
     <div className=" flex ">
       <div className="min-w-[938px] h-screen bg-white grid place-content-center ">
         <div className=" text-[3rem] font-bold text-center">
@@ -58,18 +39,13 @@ const Login = () => {
           <div>
             <input
               placeholder="Email"
-<<<<<<< HEAD
               className=" p-3 w-[32rem] h-[4rem] text-grey border border-[#3ebca3ae] bg-[#ECF5F3] rounded-3xl text-[20px] text-normal"
-=======
-              className=" p-3 w-[32rem] h-[4rem] bg-[#000000] rounded-3xl text-[20px] text-normal" value={email} onChange={handleInputChangeEmail}
->>>>>>> 756ebb512c49108e366b71cad33468c722a9b438
             ></input>
           </div>
           <div>
             <input
               placeholder="Password"
-              className=" p-3 mt-5 w-[32rem] h-[4rem] bg-[#000000] rounded-3xl text-[20px] text-normal"
-              value={password} onChange={handleInputChangePassword}
+              className=" p-3 mt-5 w-[32rem] h-[4rem] bg-[#ECF5F3] rounded-3xl text-[20px] text-normal"
             ></input>
           </div>
 
@@ -79,7 +55,7 @@ const Login = () => {
         </div>
 
         <div className="flex justify-center mt-6 ">
-          <button type="submit"  className=" hover:bg-[#3ebca3ae] w-[322px] h-[77px] text-center rounded-[30px] bg-[#28B498] text-white text-[32px] text-normal">
+          <button className=" hover:bg-[#3ebca3ae] w-[322px] h-[77px] text-center rounded-[30px] bg-[#28B498] text-white text-[32px] text-normal">
             Sign In
           </button>
         </div>
@@ -94,16 +70,14 @@ const Login = () => {
             Sign up and discover a great amount of new opportunities!
           </div>
           <div className=" flex justify-center">
-            <button className="mt-10 w-[322px] h-[77px] bg-white rounded-[30px] text-center text-[32px] font-semibold text-teal-600 hover:text-white hover:bg-teal-600 transition duration-300">
-              Sign Up
-            </button>
+          <button className="mt-10 w-[322px] h-[77px] bg-white rounded-[30px] text-center text-[32px] font-semibold text-teal-600 hover:text-white hover:bg-teal-600 transition duration-300">
+  Sign Up
+</button>
 
           </div>
         </div>
       </div>
     </div>
-    </form>
-    </>
   );
 };
 
