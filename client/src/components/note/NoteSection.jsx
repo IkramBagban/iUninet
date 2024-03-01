@@ -8,8 +8,8 @@ const NoteSection = () => {
 
   const dispatch = useDispatch();
   const subCategories = useFetch('/subcategories')
-  
-  const dataState = useFetch("/note/notes")
+  const userId = localStorage.getItem('userId')
+  const dataState = useFetch("/note/notes/" + userId)
   useEffect(() => {
     if (!dataState.data) {
       return console.log('data not fetched yet')

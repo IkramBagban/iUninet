@@ -22,6 +22,7 @@ const Categories = () => {
     const newCategory = {
       categoryId: categories.length + Math.floor(Math.random() * 9000 + 1000),
       categoryName: categoryName,
+      userId : localStorage.getItem('userId')
     };
 
     try {

@@ -37,6 +37,9 @@ const RegisterPage = () => {
 
 
   const handleSubmit = async (e) => {
+    setError(false)
+setSuccess(false)
+setToastMessage('')
     e.preventDefault();
     try {
 

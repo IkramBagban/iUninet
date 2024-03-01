@@ -3,7 +3,7 @@ const {  createCategory, deleteCategory, getCategories } = require("../controlle
 
 const router = express.Router();
 
-router.get("/notes", getCategories);
+router.get("/notes/:userId", getCategories);
 router.post("/create-category", createCategory);
 router.delete("/delete-category/:categoryId",deleteCategory)
 module.exports = router;

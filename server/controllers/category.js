@@ -3,9 +3,13 @@ const SubCategory = require("../models/subCategory");
 const { throwError } = require("../utils/throwError");
 
 exports.getCategories = async (req, res, next) => {
+  const { userId } = req.params;
   try {
-    const categories = await Category.find();
-    if (!categories) throwError("Categories Doesn't Exist.", 404);
+    if (!userId) throwError("Unauthorized - userId is required", 401);
+
+    const categories = await Category.find({ userId });
+    if (!categories)
+      throwError("No categories found for the provided userId", 404);
     res.status(200).json({
       message: "Categories Fetched Successfully",
       success: true,
@@ -13,16 +17,18 @@ exports.getCategories = async (req, res, next) => {
     });
   } catch (error) {
     if (!error.statusCode) {
-      error.statusCode = 500;
+      error.statusCode = 500; // Internal Server Error
+      error.message = "An error occurred while fetching categories";
     }
     next(error);
   }
 };
 
 exports.createCategory = async (req, res, next) => {
+  const { categoryId, categoryName, userId } = req.body;
   try {
-    if (!req.body) {
-      throwError("Category Name and CategoryId Is Required", 400);
+    if (!categoryId || !categoryName || !userId) {
+      throwError("Category Name, CategoryId and userId Is Required", 400);
     }
     const category = new Category(req.body);
     const response = await category.save();
