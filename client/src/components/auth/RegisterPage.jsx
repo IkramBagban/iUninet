@@ -38,8 +38,8 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     setError(false)
-setSuccess(false)
-setToastMessage('')
+    setSuccess(false)
+    setToastMessage('')
     e.preventDefault();
     try {
 
@@ -82,8 +82,8 @@ setToastMessage('')
   return (
 
     <>
-      {error && <ToastMessage error msg={toastMessage} />}
-      {success && <ToastMessage msg={toastMessage} />}
+      {error && <ToastMessage type="error" msg={toastMessage} />}
+      {success && <ToastMessage type="success" msg={toastMessage} />}
 
       <div className="flex flex-col md:flex-row ">
         <div className="md:w-[50%] md:min-w-[500px] h-screen grid place-content-center">
@@ -91,8 +91,7 @@ setToastMessage('')
           <div className="text-[3rem] font-bold text-center">
             Register Your Account
           </div>
-          <hr className="h-px mx-7 my-3 ">
-          </hr>
+          <hr className="h-px mx-7 my-3 " />
 
           <div className="grid place-content-center my-7">
 
