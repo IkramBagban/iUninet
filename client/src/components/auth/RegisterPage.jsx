@@ -44,7 +44,7 @@ const RegisterPage = () => {
     try {
 
       if (Object.values(inputData).some(input => input.trim() === "")) {
-        const error = "All the fields are required"
+        const error = "All the fields are required";
         throw error
       }
 
