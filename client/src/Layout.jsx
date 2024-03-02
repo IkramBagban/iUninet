@@ -3,29 +3,42 @@ import { NavLink, Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <div>
-      <div>
+    <div className="min-h-screen flex flex-col">
+      <header className="bg-gradient-to-r from-[#3FAAA8F2] to-[#39B792] text-white text-2xl font-bold py-4 px-6 text-left">
         <h1>Header</h1>
-      </div>
+      </header>
 
-      <div style={{ display: "flex" }}>
-        <div
-          style={{ width: "10vw", border: "2px solid black", height: "90vh" }}
-        >
-          <div style={{ border: "2px solid black", padding: "1rem" }}>
-            <NavLink to="/chat">
+      <div className="flex flex-1">
+        <aside className="w-[7rem] bg-white border-r border-gray-200">
+          <nav className="py-4">
+            <NavLink
+              to="/chat"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 p-2 text-teal-600 hover:bg-gray-100 rounded-md transition duration-300 ${
+                  isActive ? "bg-gray-100" : ""
+                }`
+              }
+            >
               <span className="material-symbols-outlined">chat</span>
+              <span>Chat</span>
             </NavLink>
-          </div>
-          <div style={{ border: "2px solid black", padding: "1rem" }}>
-            <NavLink to="/note">
+            <NavLink
+              to="/note"
+              className={({ isActive }) =>
+                `flex items-center space-x-2 p-2 text-teal-600 hover:bg-gray-100 rounded-md transition duration-300 ${
+                  isActive ? "bg-gray-100" : ""
+                }`
+              }
+            >
               <span className="material-symbols-outlined">note_alt</span>
+              <span>Notes</span>
             </NavLink>
-          </div>
-        </div>
-        <div style={{ border: "3px solid red", width: "88vw" }}>
+          </nav>
+        </aside>
+
+        <main className="w-5/6  border-l-1  ">
           <Outlet />
-        </div>
+        </main>
       </div>
     </div>
   );

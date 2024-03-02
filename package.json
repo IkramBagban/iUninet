@@ -1,0 +1,11 @@
+{
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "scripts": {
+    "start": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
+    "dev" : "concurrently \"cd client && npm start\" \"cd server && nodemon app.js\"",
+    "install-all": "cd server && npm install && cd ../client && npm install"
+  }
+  
+}

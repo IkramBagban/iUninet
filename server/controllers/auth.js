@@ -3,10 +3,18 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
 const bcrypt = require("bcryptjs");
+const { throwError } = require("../utils/throwError");
 
-exports.register = async (req, res) => {
+exports.register = async (req, res, next) => {
+  const { name, email, password } = req.body;
   try {
-    const { name, email, password } = req.body;
+    if (!name || !email || !password) {
+      throwError("name, email and password are required", 400);
+    }
+
+    const user = await User.findOne({ email });
+
+    if (user) throwError("User already exist", 409);
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -18,123 +26,142 @@ exports.register = async (req, res) => {
     });
 
     const savedUser = await newUser.save();
-    res.status(200).json({
+
+    if (!savedUser)
+      throwError(
+        "Internal Server Error : Error in saving user to database",
+        500
+      );
+
+    res.status(201).json({
       success: true,
       message: "Register successfully",
       data: savedUser,
     });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Register failed",
-      error: err,
-    });
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
 };
 
 exports.login = async (req, res, next) => {
+  const { email, password } = req.body;
   try {
-    const { email, password } = req.body;
+    if (!email || !password) {
+      throwError("email and password are required", 400);
+    }
+
     const user = await User.findOne({ email: email });
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+      throwError("User not found.", 404);
     }
-    const isMatch = bcrypt.compare(password, user.password);
+
+    const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid password",
-      });
+      console.log("Invalid password")
+      throwError("Invalid password", 400);
     }
+    // console.log("env",process.env)
     const token = jwt.sign({ user, id: user._id }, process.env.JWT_SECRET);
 
     res.status(200).json({ success: true, token, user });
-  } catch (err) {
-    console.log("hello catch");
-    next(err);
+  } catch (error) {
+    if (!error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
 };
 
-exports.forgetPassword = async (req, res) => {
+exports.forgetPassword = async (req, res, next) => {
+  const { email } = req.body;
   try {
-    const { email } = req.body;
+    if (!email) {
+      throwError("email is required", 400);
+    }
 
     //finding email in db
     const user = await User.findOne({ email: email });
     if (!user) {
-      res.status(404).json({ success: false, message: "User not exist" });
-
+      throwError("User not exist", 404);
     }
-    const token = jwt.sign({ _id: user._id }, process.env.RESET_PASSWORD_KEY, { expiresIn: '15m' })
-    
+
+    const token = jwt.sign({ _id: user._id }, process.env.RESET_PASSWORD_KEY, {
+      expiresIn: "15m",
+    });
+
+    if (!token) throwError("Unauthorized!", 401);
 
     let transporter = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
+      host: "smtp.gmail.com",
       port: 465,
       secure: true,
       auth: {
         user: process.env.email,
-        pass: process.env.password
+        pass: process.env.password,
       },
-
     });
     const data = {
       to: email,
-      subject: 'Reset Account Password Link',
+      subject: "Reset Account Password Link",
       html: `
-  <h3>Please click the link below to reset your password</h3>
-  <p><a>/resetpassword/${token}</a></p>
+        <h3>Please click the link below to reset your password</h3>
+        <p><a>/resetpassword/${token}</a></p>
   `,
-    }
-    
+    };
+
     await user.updateOne({ resetlink: token });
 
     transporter.sendMail(data, function (error, body) {
       if (error) {
-        console.log(error);
-        return res.status(400).json({ success: false, message: "password link error", error: error.message })
+        throwError("Internal Server Error", 500);
       }
-      return res.status(200).json({ success: true, message: 'Email has been sent' })
-    })
 
-
-
-
+      return res
+        .status(200)
+        .json({ success: true, message: "Email has been sent" });
+    });
+  } catch (error) {
+    if (error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
-  catch (err) {
-    console.log(err);
-    res.status(400).json({ success: false, message: "Something went wrong !!", error: err });
-  }
-
-}
+};
 
 exports.updatePassword = async (req, res) => {
   try {
-    const { token, password } = req.body
-    if (token) {
-      jwt.verify(token, process.env.RESET_PASSWORD_KEY, async (err, decoded_message) => {
-        if (err) {
-          return res.status(400).json({ sucess: false, message: 'Incorrect token or it is expired', error: err });
+    const { token, password } = req.body;
+    if (token || !password) throwError("token and password are required", 400);
 
+    if (token) {
+      jwt.verify(
+        token,
+        process.env.RESET_PASSWORD_KEY,
+        async (err, decoded_message) => {
+          if (err) {
+            throwError("Incorrect token or it is expired", 400);
+          }
+          const user = await User.findOne({ resetlink: token });
+          if (!user) {
+            throwError("User with this token does not exist", 404);
+          }
+
+          user.password = password;
+          await user.save();
+          return res
+            .status(200)
+            .json({ success: true, message: "Your password has been changed" });
         }
-        const user = await User.findOne({ resetlink: token });
-        if (!user) {
-          return res.status(400).json({ success: false, message: 'User with this token does not exist' });
-        }
-        user.password = password;
-        await user.save();
-        return res.status(200).json({ success: true, message: 'Your password has been changed' })
-      })
+      );
     }
+  } catch (error) {
+    if (error.statusCode) {
+      error.statusCode = 500;
+    }
+    next(error);
   }
-  catch (err) {
-      return res.status(400).json({
-        success:false,
-        message:"authentication error"
-      })
-  }
-}
+};

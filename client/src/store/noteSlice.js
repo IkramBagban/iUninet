@@ -3,63 +3,62 @@ import { createSlice } from "@reduxjs/toolkit";
 const noteSlice = createSlice({
   name: "note",
   initialState: {
-    notes: [],
-
-    // notes: [
-    //   {
-    //     categoryName: "physics ",
-    //     categoryId: "id",
-    //     categoryNotes: [
-    //       {
-    //         noteTitle: "thermodynamics",
-    //         noteId: "noteId",
-    //         noteData: [{...},{...},{...}],
-    //       },
-    //       {
-    //         title: "motion",
-    //         noteId: "noteId",
-    //         noteData: ["block data"],
-    //       },
-    //     ],
-    //   },
-    // ],
+    categories: [],
+    subCategories: [],
   },
 
   reducers: {
-    addCategory: (state, action) => {
-      console.log("adding", action.payload);
-
-      state.notes.push(action.payload);
-      console.log("state in add category", JSON.stringify(state.notes));
+    addingTheFetchedDataToStore: (state, action) => {
+      state.categories = action.payload;
     },
 
-    addNoteInfo: (state, action) => {
-      const { categoryId, info } = action.payload;
-      //   console.log('add note info',action.payload);
-      const categoryIdx = state.notes.findIndex((n) => {
-        console.log("n", n);
-        return n.categoryId === categoryId;
-      });
-
-      if (!state.notes && categoryIdx === -1) return;
-      state.notes[categoryIdx].categoryNotes.push(info);
+    addCategoryToStore: (state, action) => {
+      state.categories.push(action.payload);
     },
 
-    addNote : (state, action) =>{
-      const {categoryId, noteId, note} = action.payload
-      const categoryIdx = state.notes.findIndex( n => n.categoryId === categoryId)
+    addSubcategoriesToStore: (state, action) => {
+      console.log("paylaod ", action.payload);
+      state.subCategories = action.payload;
+    },
+    addSubCategoryToStore: (state, action) => {
+      console.log("paylaod ", action.payload);
+      state.subCategories.push(action.payload);
+    },
+    addNote: (state, action) => {
+      const { subCategoryId, notes } = action.payload;
 
-      let categoryNoteIdx;
-      if(categoryIdx !== -1){
-         categoryNoteIdx = state.notes[categoryIdx].categoryNotes.findIndex( n => n.noteId === noteId)
+      const subCategoryIdx = state.subCategories.findIndex(
+        (n) => n._id === subCategoryId
+      );
+
+      if (subCategoryIdx !== -1) {
+        state.subCategories[subCategoryIdx].notes = notes;
       }
-
-      console.log('noteidx', JSON.parse(JSON.stringify(state.notes[categoryIdx].categoryNotes[categoryNoteIdx])) )
-      console.log("note",note)
-      state.notes[categoryIdx].categoryNotes[categoryNoteIdx].noteData =  note
-    }
+    },
+    deleteSubCategory: (state, action) => {
+      const subCategoryId = action.payload;
+      const filteredSubCategories = state.subCategories.filter(
+        (subCategory) => subCategory._id !== subCategoryId
+      );
+      state.subCategories = filteredSubCategories;
+    },
+    deleteCategory: (state, action) => {
+      const categoryId = action.payload;
+      const filteredCategories = state.categories.filter(
+        (category) => category._id !== categoryId
+      );
+      state.categories = filteredCategories;
+    },
   },
 });
 
-export const { addCategory, addNoteInfo,addNote } = noteSlice.actions;
+export const {
+  addCategoryToStore,
+  addSubcategoriesToStore,
+  addSubCategoryToStore,
+  addNote,
+  addingTheFetchedDataToStore,
+  deleteCategory,
+  deleteSubCategory
+} = noteSlice.actions;
 export default noteSlice.reducer;
