@@ -2,9 +2,12 @@ const User = require("../models/user");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
-const bcrypt = require("bcryptjs");
+
+
+const {hashPassword,comparePassword }= require("../utils/passwordUtils")
 const { throwError } = require("../utils/throwError");
 
+const {signJWT,verifyJWT}=require("../utils/jwtUtils")
 exports.register = async (req, res, next) => {
   const { name, email, password } = req.body;
   try {
@@ -16,13 +19,14 @@ exports.register = async (req, res, next) => {
 
     if (user) throwError("User already exist", 409);
 
-    const salt = await bcrypt.genSalt();
-    const passwordHash = await bcrypt.hash(password, salt);
+
+    const hashedPassword = await hashPassword(password);
+
 
     const newUser = new User({
       name,
       email,
-      password: passwordHash,
+      password: hashedPassword,
     });
 
     const savedUser = await newUser.save();
@@ -59,14 +63,15 @@ exports.login = async (req, res, next) => {
       throwError("User not found.", 404);
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
       console.log("Invalid password")
       throwError("Invalid password", 400);
     }
     // console.log("env",process.env)
-    const token = jwt.sign({ user, id: user._id }, process.env.JWT_SECRET);
-
+    // const token = jwt.sign({ user, id: user._id }, process.env.JWT_SECRET);
+    const token = await signJWT({ user, id: user._id });
+    console.log(token);
     res.status(200).json({ success: true, token, user });
   } catch (error) {
     if (!error.statusCode) {
@@ -109,7 +114,7 @@ exports.forgetPassword = async (req, res, next) => {
       subject: "Reset Account Password Link",
       html: `
         <h3>Please click the link below to reset your password</h3>
-        <p><a>/resetpassword/${token}</a></p>
+        <p><a href="http://localhost:3000/register/${token}">Reset Link</a></p>
   `,
     };
 
@@ -132,33 +137,33 @@ exports.forgetPassword = async (req, res, next) => {
   }
 };
 
-exports.updatePassword = async (req, res) => {
+exports.updatePassword = async (req, res, next) => {
   try {
-    const { token, password } = req.body;
-    if (token || !password) throwError("token and password are required", 400);
+    const token= req.params.token;
+    const { password } = req.body;
+    if (!token || !password) throwError("token and password are required", 400);
 
     if (token) {
-      jwt.verify(
-        token,
-        process.env.RESET_PASSWORD_KEY,
-        async (err, decoded_message) => {
-          if (err) {
-            throwError("Incorrect token or it is expired", 400);
-          }
+      await verifyJWT(token);
           const user = await User.findOne({ resetlink: token });
           if (!user) {
             throwError("User with this token does not exist", 404);
           }
+          //hash the password
+          const hashedPassword = await hashPassword(password);
+          user.password = hashedPassword;
 
-          user.password = password;
+          user.resetlink=" ";
+
+
           await user.save();
           return res
             .status(200)
             .json({ success: true, message: "Your password has been changed" });
         }
-      );
-    }
+    
   } catch (error) {
+    console.log(error);
     if (error.statusCode) {
       error.statusCode = 500;
     }
