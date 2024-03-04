@@ -1,23 +1,25 @@
-
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const { throwError } = require("../utils/throwError");
 
 exports.isAuth = (req, res, next) => {
-  const token = req.headers['auth-token'];
-
-  if (!token) {
-    return res.status(401).json({ message: 'No token, authorization denied' });
-  }
+  const token = req.headers["token"];
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.user;
-    next();
-  } catch (err) {
-    if(err.statusCode){
-      error.statusCode=500;
+    if (!token) {
+      throwError("Token is not provided , authorization denied", 401);
     }
-    next(err);
-    
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    if (decoded) {
+      req.user = decoded.user;
+    } else {
+      throwError("Invalid Token , authorization denied", 401);
+    }
+    next();
+  } catch (error) {
+    if (error.statusCode) {
+      error.statusCode = 401;
+    }
+    next(error);
   }
 };

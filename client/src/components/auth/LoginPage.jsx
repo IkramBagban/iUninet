@@ -28,7 +28,7 @@ const Login = () => {
   const [toastMessage, setToastMessage] = useState('Something went wrong ');
 
 
-  if (localStorage.getItem('auth-token')) return <Navigate to="/" />
+  if (localStorage.getItem('token')) return <Navigate to="/" />
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -53,7 +53,7 @@ const Login = () => {
         setSuccess(true);
         setToastMessage("Login successful");
         navigate('/')
-        localStorage.setItem('auth-token', response.data.token);
+        localStorage.setItem('token', response.data.token);
         localStorage.setItem('userId', response.data.user._id);
       }
     } catch (error) {

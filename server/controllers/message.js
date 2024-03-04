@@ -1,9 +1,19 @@
 const Message = require("../models/message");
 const Conversation = require("../models/conversation");
+const { throwError } = require("../utils/throwError");
 
 const sendMessage = async (req, res, next) => {
   try {
-    const { senderId, recipientId, message } = req.body;
+    console.log("In sendMessage");
+    const { recipientId } = req.params;
+    const { message } = req.body;
+    const senderId = req.user._id;
+    console.log("recipientId", recipientId);
+    console.log("senderId", senderId);
+
+    if (!recipientId || !message || !senderId) {
+      throwError("recipientId, senderId and message are required fields", 400);
+    }
 
     let conversation = await Conversation.findOne({
       participants: { $all: [senderId, recipientId] },
@@ -33,18 +43,21 @@ const sendMessage = async (req, res, next) => {
       data: newMessage,
     });
   } catch (error) {
-    console.log(error);
+    next(error);
   }
 };
 
 const getMessages = async (req, res, next) => {
   try {
-    const { senderId, recipientId } = req.params;
+    const { recipientId } = req.params;
+    const senderId = req.user._id;
+    // console.log('user', )
+
     const conversation = await Conversation.find({
       participants: { $all: [senderId, recipientId] },
     }).populate("messages");
 
-    console.log("conversation", conversation);
+    // console.log("conversation", conversation);
     res.status(200).json({
       message: "messages fetched successfully",
       success: true,

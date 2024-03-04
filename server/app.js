@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const authRoute = require("./routes/auth");
 const noteRoute = require("./routes/category");
 const subCategoryRoute = require("./routes/subCategory");
-const messageRoute = require("./routes/message")
+const messageRoute = require("./routes/message");
 
 app.use("/auth", authRoute);
 app.use("/note", noteRoute);
@@ -27,6 +27,7 @@ app.get("/", (req, res) => {
 app.use((error, req, res, next) => {
   const statusCode = error.statusCode || 500;
   const message = error.message || "Internal Server Error.";
+  console.log(error);
   res.status(statusCode).json({ success: false, message: message });
 });
 

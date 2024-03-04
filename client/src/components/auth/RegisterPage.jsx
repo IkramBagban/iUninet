@@ -27,7 +27,7 @@ const RegisterPage = () => {
   const navigate = useNavigate()
 
 
-  if (localStorage.getItem('auth-token')) return <Navigate to="/" />
+  if (localStorage.getItem('token')) return <Navigate to="/" />
 
 
   const inputChangeHandler = (e) => {
