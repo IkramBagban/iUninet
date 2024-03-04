@@ -13,9 +13,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const authRoute = require("./routes/auth");
 const noteRoute = require("./routes/category");
 const subCategoryRoute = require("./routes/subCategory");
+const messageRoute = require("./routes/message")
 
 app.use("/auth", authRoute);
 app.use("/note", noteRoute);
+app.use("/message", messageRoute);
 app.use(subCategoryRoute);
 
 app.get("/", (req, res) => {
