@@ -4,8 +4,10 @@
   },
   "scripts": {
     "start": "concurrently \"cd client && npm start\" \"cd server && npm start\"",
-    "dev" : "concurrently \"cd client && npm start\" \"cd server && nodemon app.js\"",
+    "dev": "concurrently \"cd client && npm start\" \"cd server && nodemon app.js\"",
     "install-all": "cd server && npm install && cd ../client && npm install"
+  },
+  "dependencies": {
+    "nodemon": "^3.1.0"
   }
-  
 }
