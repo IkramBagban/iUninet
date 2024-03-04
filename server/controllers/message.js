@@ -1,21 +1,36 @@
 const Message = require("../models/message");
+const Conversation = require("../models/conversation");
 
 const sendMessage = async (req, res, next) => {
   try {
     const { senderId, recipientId, message } = req.body;
 
-    const msg = new Message({
+    let conversation = await Conversation.findOne({
+      participants: { $all: [senderId, recipientId] },
+    });
+
+    if (!conversation) {
+      conversation = await Conversation.create({
+        participants: [senderId, recipientId],
+      });
+    }
+
+    const newMessage = new Message({
       senderId,
       recipientId,
       message,
     });
 
-    const response = await msg.save();
+    if (newMessage) {
+      conversation.messages.push(newMessage);
+    }
+
+    await Promise.all([conversation.save(), newMessage.save()]);
 
     res.status(201).json({
       message: "message has been sent",
       success: true,
-      data: response,
+      data: newMessage,
     });
   } catch (error) {
     console.log(error);
@@ -24,14 +39,19 @@ const sendMessage = async (req, res, next) => {
 
 const getMessages = async (req, res, next) => {
   try {
-    const messages = await Message.find({});
+    const { senderId, recipientId } = req.params;
+    const conversation = await Conversation.find({
+      participants: { $all: [senderId, recipientId] },
+    }).populate("messages");
 
+    console.log("conversation", conversation);
     res.status(200).json({
       message: "messages fetched successfully",
       success: true,
-      data: messages,
+      data: conversation,
     });
   } catch (error) {
+    next(error);
     console.log(error);
   }
 };

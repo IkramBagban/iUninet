@@ -4,16 +4,18 @@ const conversationSchema = mongoose.Schema({
   participants: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      ref : 'User',
     },
   ],
 
-  conversation: [
+  messages: [
     {
-      type: String,
-      required: true,
+      type: mongoose.Schema.Types.ObjectId,
+      ref : 'Message',
+      default: [],
     },
   ],
 });
 
-module.exports = mongoose.model("conversation", conversationSchema);
+// conversationSchema.methods.addMessageToConversation  
+module.exports = mongoose.model("Conversation", conversationSchema);
