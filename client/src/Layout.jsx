@@ -9,7 +9,7 @@ const Layout = () => {
       </header>
 
       <div className="flex flex-1">
-        <aside className="w-[7rem] bg-white border-r border-gray-200">
+        <aside className=" bg-white border-r border-gray-200">
           <nav className="py-4">
             <NavLink
               to="/chat"
@@ -20,7 +20,7 @@ const Layout = () => {
               }
             >
               <span className="material-symbols-outlined">chat</span>
-              <span>Chat</span>
+              {/* <span>Chat</span> */}
             </NavLink>
             <NavLink
               to="/note"
@@ -31,12 +31,13 @@ const Layout = () => {
               }
             >
               <span className="material-symbols-outlined">note_alt</span>
-              <span>Notes</span>
+              {/* <span>Notes</span> */}
             </NavLink>
           </nav>
         </aside>
 
         <main className="w-5/6  border-l-1  ">
+        {/* <main className="border-l-1  "> */}
           <Outlet />
         </main>
       </div>
