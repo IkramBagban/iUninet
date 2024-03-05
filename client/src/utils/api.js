@@ -19,3 +19,16 @@ export const postData = async (endpoint, data) => {
     return error.response;
   }
 };
+
+export const putData= async (endpoint,data)=>{
+  try{
+    console.log(`${API +endpoint}`);
+
+    const response =await axios.put(`${API+endpoint}`,data);
+
+    return response;
+  }catch(error){
+    return error.response;
+
+  }
+}

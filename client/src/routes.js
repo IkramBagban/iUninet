@@ -3,10 +3,10 @@ import Layout from "./Layout";
 import ChatSection from "./components/chat/ChatSection";
 import NoteSection from "./components/note/NoteSection";
 import NoteEditorSection from "./components/note/NoteEditorSection";
-import Login from "./components/auth/LoginPage";
 import SubCategories from "./components/note/SubCategories";
-import Dummy_Login from "./components/auth/Dummy_Login";
-import RegisterPage from "./components/auth/RegisterPage";
+
+import {Login,Register,ForgetPassword,UpdatePassword} from "./components/auth/auth"
+
 
 
 
@@ -27,8 +27,9 @@ const router = createBrowserRouter([
 
   },
   { path: "/login", element: <Login /> },
-  { path: "/register", element: <RegisterPage /> }
-
+  { path: "/register", element: <Register/> },
+  {path:"/forget-password",element: <ForgetPassword/>},
+  {path:"/update-password/:token",element: <UpdatePassword/>}
 ]);
 
 export default router;

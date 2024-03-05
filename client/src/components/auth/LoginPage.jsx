@@ -58,11 +58,16 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Error:", error);
+
       setError(true);
       if (error.response?.data.message === "Invalid password") {
         return setToastMessage(error.response.data.message);
       }
       setToastMessage(error);
+      setTimeout(() => {
+        setError(false);
+      },4000);
+      
     }
   }
 

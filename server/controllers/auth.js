@@ -4,10 +4,10 @@ const nodemailer = require("nodemailer");
 
 
 
-const {hashPassword,comparePassword }= require("../utils/passwordUtils")
+const { hashPassword, comparePassword } = require("../utils/passwordUtils")
 const { throwError } = require("../utils/throwError");
 
-const {signJWT,verifyJWT}=require("../utils/jwtUtils")
+const { signJWT, verifyJWT } = require("../utils/jwtUtils")
 exports.register = async (req, res, next) => {
   const { name, email, password , profilePic} = req.body;
   console.log("Req Body => ", req.file)
@@ -119,7 +119,7 @@ exports.forgetPassword = async (req, res, next) => {
       subject: "Reset Account Password Link",
       html: `
         <h3>Please click the link below to reset your password</h3>
-        <p><a href="http://localhost:3000/register/${token}">Reset Link</a></p>
+        <p><a href="http://localhost:3000/update-password/${token}">Reset Link</a></p>
   `,
     };
 
@@ -144,29 +144,29 @@ exports.forgetPassword = async (req, res, next) => {
 
 exports.updatePassword = async (req, res, next) => {
   try {
-    const token= req.params.token;
+    const token = req.params.token;
     const { password } = req.body;
     if (!token || !password) throwError("token and password are required", 400);
 
     if (token) {
       await verifyJWT(token);
-          const user = await User.findOne({ resetlink: token });
-          if (!user) {
-            throwError("User with this token does not exist", 404);
-          }
-          //hash the password
-          const hashedPassword = await hashPassword(password);
-          user.password = hashedPassword;
+      const user = await User.findOne({ resetlink: token });
+      if (!user) {
+        throwError("User with this token does not exist", 404);
+      }
+      //hash the password
+      const hashedPassword = await hashPassword(password);
+      user.password = hashedPassword;
 
-          user.resetlink=" ";
+      user.resetlink = " ";
 
 
-          await user.save();
-          return res
-            .status(200)
-            .json({ success: true, message: "Your password has been changed" });
-        }
-    
+      await user.save();
+      return res
+        .status(200)
+        .json({ success: true, message: "Your password has been changed" });
+    }
+
   } catch (error) {
     console.log(error);
     if (error.statusCode) {
