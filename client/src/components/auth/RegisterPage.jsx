@@ -6,6 +6,7 @@ import AuthRightSection from "../UI/AuthRightSection";
 import Input from "../UI/Input";
 import Button from "../UI/Button";
 import { postData } from "../../utils/api";
+import FileInput from "../UI/FileInput";
 
 
 const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -16,6 +17,8 @@ const RegisterPage = () => {
     password: "",
     name: "",
   })
+  const [selectedFile, setSelectedFile] = useState(null)
+
 
   console.log("locals", localStorage)
 
@@ -33,6 +36,11 @@ const RegisterPage = () => {
   const inputChangeHandler = (e) => {
     const { name, value } = e.target
     setInputData(prevData => ({ ...prevData, [name]: value }))
+  }
+  const onFileChange = (e) => {
+    console.log(e.target)
+    console.log('e.target.files',e.target.files[0])
+    setSelectedFile(e.target.files[0])
   }
 
 
@@ -59,7 +67,15 @@ const RegisterPage = () => {
         throw error
       }
 
-      const response = await postData('/auth/register', inputData)
+      const formData = new FormData();
+      formData.append('name', inputData.name)
+      formData.append('email', inputData.email);
+      formData.append('password', inputData.password);
+      if (selectedFile) {
+        formData.append('profilePic', selectedFile)
+      }
+      console.log('formdata', formData)
+      const response = await postData('/auth/register', formData)
       console.log('response', response)
 
       if (response.data.success === true) {
@@ -107,6 +123,7 @@ const RegisterPage = () => {
               value={inputData.email}
               onChange={inputChangeHandler}
             />
+            <FileInput onChange={onFileChange} />
 
             <Input
               placeholder="Password"

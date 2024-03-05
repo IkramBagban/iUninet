@@ -9,10 +9,13 @@ const { throwError } = require("../utils/throwError");
 
 const {signJWT,verifyJWT}=require("../utils/jwtUtils")
 exports.register = async (req, res, next) => {
-  const { name, email, password } = req.body;
+  const { name, email, password , profilePic} = req.body;
+  console.log("Req Body => ", req.file)
+  // console.log("Req file => ", req)
+  console.log("profilePic => ", profilePic?profilePic:'No pic')
   try {
-    if (!name || !email || !password) {
-      throwError("name, email and password are required", 400);
+    if (!name || !email || !password || !req.file) {
+      throwError("name, email, file and password are required", 400);
     }
 
     const user = await User.findOne({ email });
@@ -27,6 +30,7 @@ exports.register = async (req, res, next) => {
       name,
       email,
       password: hashedPassword,
+      profilePic : req.file.path
     });
 
     const savedUser = await newUser.save();
