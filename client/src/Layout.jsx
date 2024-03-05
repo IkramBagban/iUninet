@@ -14,8 +14,7 @@ const Layout = () => {
             <NavLink
               to="/chat"
               className={({ isActive }) =>
-                `flex items-center space-x-2 p-2 text-teal-600 hover:bg-gray-100 rounded-md transition duration-300 ${
-                  isActive ? "bg-gray-100" : ""
+                `flex items-center space-x-2 p-2 text-teal-600 hover:bg-gray-100 rounded-md transition duration-300 ${isActive ? "bg-gray-100" : ""
                 }`
               }
             >
@@ -25,8 +24,7 @@ const Layout = () => {
             <NavLink
               to="/note"
               className={({ isActive }) =>
-                `flex items-center space-x-2 p-2 text-teal-600 hover:bg-gray-100 rounded-md transition duration-300 ${
-                  isActive ? "bg-gray-100" : ""
+                `flex items-center space-x-2 p-2 text-teal-600 hover:bg-gray-100 rounded-md transition duration-300 ${isActive ? "bg-gray-100" : ""
                 }`
               }
             >
@@ -37,7 +35,7 @@ const Layout = () => {
         </aside>
 
         <main className="w-5/6  border-l-1  ">
-        {/* <main className="border-l-1  "> */}
+          {/* <main className="border-l-1  "> */}
           <Outlet />
         </main>
       </div>

@@ -40,8 +40,8 @@ const Login = () => {
       }
 
       const response = await postData('/auth/login', inputData);
-
-      if (response.status === 404) {
+      console.log('response', response)
+      if (response?.status === 404) {
         const error = "user not found"
         throw error
       }

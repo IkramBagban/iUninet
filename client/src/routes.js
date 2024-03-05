@@ -8,6 +8,8 @@ import SubCategories from "./components/note/SubCategories";
 import Dummy_Login from "./components/auth/Dummy_Login";
 import RegisterPage from "./components/auth/RegisterPage";
 
+
+
 const router = createBrowserRouter([
   {
     path: "/",

@@ -52,6 +52,7 @@ exports.register = async (req, res, next) => {
 
 exports.login = async (req, res, next) => {
   const { email, password } = req.body;
+  console.log('in login controller backend')
   try {
     if (!email || !password) {
       throwError("email and password are required", 400);

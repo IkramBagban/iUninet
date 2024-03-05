@@ -14,10 +14,12 @@ const authRoute = require("./routes/auth");
 const noteRoute = require("./routes/category");
 const subCategoryRoute = require("./routes/subCategory");
 const messageRoute = require("./routes/message");
+const userRoutes = require("./routes/user");
 
 app.use("/auth", authRoute);
 app.use("/note", noteRoute);
 app.use("/message", messageRoute);
+app.use("/users", userRoutes);
 app.use(subCategoryRoute);
 
 app.get("/", (req, res) => {
