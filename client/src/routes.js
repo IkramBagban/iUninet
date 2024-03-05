@@ -8,6 +8,8 @@ import SubCategories from "./components/note/SubCategories";
 import {Login,Register,ForgetPassword,UpdatePassword} from "./components/auth/auth"
 
 
+
+
 const router = createBrowserRouter([
   {
     path: "/",

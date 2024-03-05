@@ -13,11 +13,11 @@ const categorySchema = new mongoose.Schema(
   {
     categoryName: {
       type: String,
-      require: true,
+      required: true,
     },
     categoryId: {
       type: Number,
-      require: true,
+      required: true,
     },
     subCategoryId: [
       {
@@ -25,6 +25,12 @@ const categorySchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
       },
     ],
+
+    userId: {
+      ref: "Category",
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
   },
   { minimize: false }
 );

@@ -9,17 +9,18 @@ import { postData } from "../../utils/api";
 
 const Login = () => {
 
-
   const [inputData, setInputData] = useState({
     email: "",
     password: ""
   })
+
   const inputChangeHandler = ((e) => {
     const { name, value } = e.target;
-    setInputData(prevData => (console.log(prevData), {
+    setInputData(prevData => ({
       ...prevData, [name]: value
     }))
   });
+
   const navigate = useNavigate()
 
   const [success, setSuccess] = useState(false);
@@ -27,7 +28,7 @@ const Login = () => {
   const [toastMessage, setToastMessage] = useState('Something went wrong ');
 
 
-  if (localStorage.getItem('auth-token')) return <Navigate to="/" />
+  if (localStorage.getItem('token')) return <Navigate to="/" />
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -39,8 +40,8 @@ const Login = () => {
       }
 
       const response = await postData('/auth/login', inputData);
-
-      if (response.status === 404) {
+      console.log('response', response)
+      if (response?.status === 404) {
         const error = "user not found"
         throw error
       }
@@ -52,7 +53,7 @@ const Login = () => {
         setSuccess(true);
         setToastMessage("Login successful");
         navigate('/')
-        localStorage.setItem('auth-token', response.data.token);
+        localStorage.setItem('token', response.data.token);
         localStorage.setItem('userId', response.data.user._id);
       }
     } catch (error) {
@@ -70,37 +71,21 @@ const Login = () => {
     }
   }
 
-
-  // const handleInputChangePassword = (e) => {
-  //   setPassword(e.target.value);
-  // }
-
-  // const handleInputChangeEmail = (e) => {
-  //   setEmail(e.target.value);
-  // }
   return (
 
     <>
-      {error && <ToastMessage error msg={toastMessage} />}
-      {success && <ToastMessage msg={toastMessage} />}
+      {error && <ToastMessage type="error" msg={toastMessage} />}
+      {success && <ToastMessage type="success" msg={toastMessage} />}
+
       <div className="flex flex-col md:flex-row ">
         <div className="md:w-[50%] md:min-w-[500px] h-screen grid place-content-center">
-
-
           <div className="text-[3rem] font-bold text-center">
             Login To Your Account
           </div>
-
           <div className="text-[1.8rem] font-normal text-center">
             Login using social networks{" "}
           </div>
-
-          <div className="grid  ">
-
-          </div>
-
-          <hr className="h-px mx-7 my-3 ">
-          </hr>
+          <hr className="h-px mx-7 my-3 " />
 
 
           <div className="grid place-content-center my-7">

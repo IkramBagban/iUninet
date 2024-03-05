@@ -2,34 +2,29 @@ const jwt = require("jsonwebtoken");
 const secretKey = process.env.JWT_SECRET;
 const { throwError } = require("./throwError");
 
-
-const signJWT = async (payload, expiresIn = '15min') => {
-    return jwt.sign(payload, secretKey, { expiresIn });
-}
-
+const signJWT = async (payload, expiresIn = "15min") => {
+  // return jwt.sign(payload, secretKey, { expiresIn });
+  return jwt.sign(payload, secretKey);
+};
 
 const verifyJWT = async (token, next) => {
-    try {
-        const decoded = await jwt.verify(token, secretKey);
-        console.log(decoded)
-        return decoded;
-    } catch (err) {
-        if (err.name === 'JsonWebTokenError') {
-            throwError("JWT verification failed", 400);
-        }
+  try {
+    const decoded = await jwt.verify(token, secretKey);
 
-        else {
-
-
-            if (err.statusCode) {
-                err.statusCode = 500;
-            }
-            next(err);
-        }
-
-
+    if (!decoded) {
+      throwError("Authroization Failed.", 401);
     }
-}
-
+    return decoded;
+  } catch (err) {
+    if (err.name === "JsonWebTokenError") {
+      throwError("Authroization Failed.", 401);
+    } else {
+      if (err.statusCode) {
+        err.statusCode = 401;
+      }
+      next(err);
+    }
+  }
+};
 
 module.exports = { signJWT, verifyJWT };
