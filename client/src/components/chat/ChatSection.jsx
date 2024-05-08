@@ -9,7 +9,7 @@ const ChatSection = () => {
         <ChatSidebar />
       </div>
 
-      <div className='w-auto h-auto border'>
+      <div className='w-[100%] h-auto border'>
         <ChatRightSection />
       </div>
     </div>

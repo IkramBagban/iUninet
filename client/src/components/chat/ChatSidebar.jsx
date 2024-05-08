@@ -51,7 +51,7 @@ const ChatSidebar = () => {
     return (
         <div>
             <div className='m-2 '>
-                <input type="text" className='w-[100%] h-[2rem] rounded-md bg-[#e6e9e6] text-black ' />
+                <input type="text" placeholder='Search...' className='w-[100%] h-[2rem] px-2 rounded-md bg-[#e6e9e6] text-black ' />
             </div>
 
             <div>
@@ -59,7 +59,7 @@ const ChatSidebar = () => {
 
                     <div className='flex w-[100%] h-[3rem] border box-border'>
                         <div className='w-[2.5rem] h-[2.5rem] rounded-full border border-black bg-grey m-1'></div>
-                        <div className='w-[100%]'>
+                        <div className='w-[100%] cursor-pointer'  onClick={()=> console.log('clicked user '+ chat.name)}>
                             <div className='flex justify-between'>
                                 <div className='font-medium'>{chat.name}</div>
                                 <p className='me-2 text-[grey]'>{chat.time}</p>

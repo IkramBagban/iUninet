@@ -14,7 +14,7 @@ exports.register = async (req, res, next) => {
   // console.log("Req file => ", req)
   console.log("profilePic => ", profilePic?profilePic:'No pic')
   try {
-    if (!name || !email || !password || !req.file) {
+    if (!name || !email || !password) {
       throwError("name, email, file and password are required", 400);
     }
 
@@ -30,7 +30,7 @@ exports.register = async (req, res, next) => {
       name,
       email,
       password: hashedPassword,
-      profilePic : req.file.path
+      profilePic : req.file ? req.file.path : undefined
     });
 
     const savedUser = await newUser.save();
